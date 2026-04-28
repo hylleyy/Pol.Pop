@@ -9,7 +9,7 @@ Pol.Pop (Políticas Populares) is a social-tech solution designed to bridge the 
 The project addresses three critical barriers in the Brazilian public sector:
 
 - **Infrastructure Fragmentation**: Federal, state, and municipal data systems rarely communicate, leaving citizens unaware of benefits across different spheres.
-- **Digital Exclusion**: Approximately 14% of Brazilian households lack internet access^[http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=12], and 87% of the poorest access the web exclusively via mobile devices^[http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=13] with limited prepaid data plans^[https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12].
+- **Digital Exclusion**: Approximately 14% of Brazilian households lack internet access [^1], and 87% of the poorest access the web exclusively via mobile devices[^2] with limited prepaid data plans[^3].
 - **Cognitive Barrier**: Standard government portals (Gov.br) are often too complex for users with low digital literacy.
 
 ## III. About the System Architecture
@@ -55,20 +55,20 @@ The system uses a non-blocking background synchronization cycle to ensure the "R
 		participant SB as Sandbox Engine
 		participant RS as Remote API
 
-		rect rgb(240, 248, 255)
+		rect rgb(0, 0, 0, 0.1)
 		Note over App, RS: Asynchronous Sync (Background)
 		App->>RS: Request: Policy Rules & News Feed
 		RS-->>App: Payload JSON (Rules + Feed Data)
 		App->>LS: Persist updated logic locally
 		end
 
-		rect rgb(245, 245, 245)
+		rect rgb(0, 0, 0, 0.1)
 		Note over U, LS: Data Lifecycle
 		U->>App: Input Socioeconomic Data
 		App->>LS: Encrypt & Save User Profile (Income, ZIP, etc.)
 		end
 
-		rect rgb(230, 255, 230)
+		rect rgb(0, 0, 0, 0.1)
 		Note over App, SB: Edge Processing (Score Engine)
 		App->>LS: Fetch Rules & User Profile
 		LS-->>App: Data: [Criteria, Profile]
@@ -105,3 +105,7 @@ By adopting a local-first processing model, Pol.Pop is compliant by design with 
 | Data Engine | Lightweight JSON Rule Engine | Enables evaluation flexibility. |
 | Storage | SQLite / Encrypted Storage | Ensures fast local querying and security for sensitive data. |
 | Connectivity | Offline-First (Sync on Connect) | Vital for users who rely on "borrowed" Wi-Fi (e.g., bakeries/shelters). |
+
+[^1]: http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=12
+[^2]: http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=13
+[^3]: https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12
