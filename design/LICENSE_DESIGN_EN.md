@@ -2,9 +2,9 @@
 
 Copyright © 2026 Projeto Pol.Pop. All Rights Reserved.
 
-All artistic and design assets contained in this directory (including, but not limited to: logos, icons, user interface elements—UI, mascots, typography, and raw design files) are protected by intellectual property laws.
+All proprietary artistic and design assets contained in this directory (including, but not limited to: logos, icons, user interface elements—UI, mascots, typography, and raw design files) are protected by intellectual property laws.
 
-## I. Limited End-User License
+#### I. Limited End-User License
 
 This section governs the use of the raw and exported assets contained in this folder.
 
@@ -17,7 +17,7 @@ This section governs the use of the raw and exported assets contained in this fo
 	- Sell, sublicense, or redistribute the raw asset files (including, but not limited to `.psd`, `.ai`, `.fig`, `.svg`, `.png` or `.jpg` files).
 	- Use the Pol.Pop visual identity in any way that suggests official endorsement or partnership without prior authorization.
 
-## II. Community Standards & Values
+#### II. Community Standards & Values
 
 Pol.Pop is a social impact project focused on the dignity and safety of citizens. We reserve the right to revoke any permission to use or display our brand in contexts that violate the following standards:
 
@@ -27,6 +27,6 @@ Pol.Pop is a social impact project focused on the dignity and safety of citizens
 
 - **Project Discretion**: Projeto Pol.Pop remains the final arbiter of what constitutes a violation of these values, reserving the right to request the removal of content that we deem, in good faith, to be harmful to the project’s reputation or mission.
 
-### III. Enforcement
+#### III. Enforcement
 
 Any use of assets outside of the "Permitted Use" requires prior written consent. Failure to comply with the conditions set forth in these sections may result in a formal request for removal or legal action to protect the project's intellectual property and social integrity.
