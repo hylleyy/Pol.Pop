@@ -2,6 +2,11 @@
 
 > A social impact project focused on reducing administrative invisibility & democratizing access to social rights in Brazil through offline-first technology and inclusive design. 
 
+**To-do:**
+- [ ] Compose Terms & Services for end-users
+- [ ] Finish technical documentation
+- [ ] Compose welfare benefits rule file
+
 ## ⚖️ Licensing
 This project uses a dual-licensing model to balance open-source collaboration with the protection of our creative IP.
 

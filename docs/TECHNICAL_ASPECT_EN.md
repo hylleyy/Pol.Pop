@@ -109,3 +109,44 @@ By adopting a local-first processing model, Pol.Pop is compliant by design with 
 [^1]: http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=12
 [^2]: http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=13
 [^3]: https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12
+
+## VII. Data Schema
+
+How data look like:
+
+#### Internal User Local Storage
+
+Is a SQL table, each row represents a profile
+
+| NAME | CPF | BIRTH | NIS | CEP | INCOME | HOUSING_SITUATION | HOUSING_COMPOSE |
+|------|-----|-------|-----|-----|--------|-------------------|-----------------|
+
+#### Payload JSON
+
+Example of the data schema that the remote server sends to the device (containting the welfare benefits rules & feed pots) # I need to change all "benefits" mentions to Welfare Benefits to keep it standardized
+
+```json
+{
+	"welfare" : [
+		{
+			"title" : "Bolsa Família 2016",
+			"scope" : 0, // 0 → federal; 1 → state; 2 → municipal; 3 → other
+			"rules" : [ "(INCOME / len(HOUSING_COMPOSE)) <= 218" ] // This snipets of code are evaluated on an isolated sandbox
+		}
+	],
+	"feed" : [
+		{
+			"title" : "INSS garante acesso a benefícios no 12º Mutirão PopRuaJud do Distrito Federal",
+			"recap" : "O Instituto Nacional do Seguro Social (INSS) realizou 150 atendimentos presenciais nesta segunda-feira (27), durante o 12º Mutirão PopRuaJud – Distrito Federal. A ação ocorreu no Pavilhão de Exposições do Parque da Cidade, em Brasília (DF), com o objetivo de ampliar o acesso a serviços essenciais à população em situação de rua.\n\nOs cidadãos tiveram acesso a orientações previdenciárias e ao serviço de protocolo de requerimentos, com foco em benefícios assistenciais ao idoso e à pessoa com deficiência. A qualidade do atendimento foi um dos pontos destacados por Marcos Angelosi Ribeiro, que procurou o mutirão para dar entrada no Benefício de Prestação Continuada (BPC). “Consegui dar entrada no benefício e ainda estou no meio do processo, mas até agora fui muito bem atendido. Estou satisfeito com a assistência que recebi aqui”, afirmou.\n\nIdalia Martins Nunes também ressaltou a importância da iniciativa. “Vim buscar o BPC para o meu filho, que tem autismo. Aqui foi mais fácil resolver tudo, facilitou muito para a gente”, relatou. Já para Eric Coutinho, que também buscava dar entrada no BPC, a agilidade foi um diferencial. “O atendimento foi ótimo, rápido e eficiente. Já saí com o requerimento encaminhado, agora é só acompanhar o andamento”, destacou.",
+			"image" : "", // Image buffer object encoded in base64 string
+			"links" : "https://www.gov.br/inss/pt-br/assuntos/inss-garante-acesso-a-beneficios-no-12o-mutirao-popruajud-do-distrito-federal"
+		},
+		{
+			"title" : "CRAS Santarenzinho realiza programação cultural com usuários do Serviço de Convivência e Fortalecimento de Vínculos",
+			"recap" : "A Prefeitura de Santarém, por meio da Secretaria Municipal de Trabalho e Assistência Social (Semtras), realizou na manhã desta quarta-feira (29) uma programação cultural especial com usuários do Serviço de Convivência e Fortalecimento de Vínculos (SCFV) do Centro de Referência de Assistência Social (Cras) Santarenzinho.\n\nA ação reuniu crianças, adolescentes, idosos e seus familiares no auditório da unidade, marcando o início de um novo ciclo de atividades voltadas à convivência, ao aprendizado e ao fortalecimento dos vínculos familiares e comunitários.\n\nA programação contou com apresentações protagonizadas pelos próprios usuários do serviço, incluindo danças regionais como carimbó, forró e a tradicional dança do boto. O encerramento foi marcado por uma apresentação coletiva que emocionou o público presente, evidenciando o papel da cultura como instrumento de inclusão social e valorização das diferentes faixas etárias atendidas pelo SCFV.",
+			"image" : "", // Image buffer object encoded in base64 string
+			"links" : "https://santarem.pa.gov.br/noticias/assistencia-social/cras-santarenzinho-realiza-programacao-cultural-com-atendidos-pelo-servico-de-convivencia-e-fortalecimento-de-vinculos-sv8dy5"
+		}
+	]
+}
+```
