@@ -1,19 +1,29 @@
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Tabs } from 'expo-router';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+import { Image, ImageSourcePropType } from 'react-native';
+
+interface TabIconProps {
+  focused: boolean;
+  activeIcon: ImageSourcePropType;
+  inactiveIcon: ImageSourcePropType;
 }
+
+const TabIcon = ({ focused, activeIcon, inactiveIcon }: TabIconProps) => {
+  return (
+    <Image
+      source={focused ? activeIcon : inactiveIcon}
+      style={{
+        width: 24,
+        height: 24,
+      }}
+      resizeMode="contain"
+    />
+  );
+};
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -24,25 +34,22 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingVertical: 5, // Adjust this if you want more/less breathing room
+        },
       }}>
       <Tabs.Screen
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+          tabBarIcon: ({ focused }) => (
+          <TabIcon
+              focused={focused}
+              activeIcon={require('../../assets/images/icons/home-icon-active.png')}
+              inactiveIcon={require('../../assets/images/icons/home-icon.png')}
+            />
           ),
         }}
       />
@@ -50,14 +57,26 @@ export default function TabLayout() {
         name="search"
         options={{
           title: 'Search',
-          tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
+          tabBarIcon: ({ focused }) => (
+          <TabIcon
+              focused={focused}
+              activeIcon={require('../../assets/images/icons/discovery-icon-active.png')}
+              inactiveIcon={require('../../assets/images/icons/discovery-icon.png')}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          tabBarIcon: ({ focused }) => (
+          <TabIcon
+              focused={focused}
+              activeIcon={require('../../assets/images/icons/profile-icon-active.png')}
+              inactiveIcon={require('../../assets/images/icons/profile-icon.png')}
+            />
+          ),
         }}
       />
     </Tabs>
