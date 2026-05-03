@@ -38,10 +38,12 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarItemStyle: {
+          flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'center',
+          paddingTop: 5,
         },
         tabBarStyle: {
+          height: 60,
           backgroundColor: Colors[colorScheme].background,
           borderTopWidth: 0,
           shadowColor: '#fff0',
