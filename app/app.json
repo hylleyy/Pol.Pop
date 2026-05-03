@@ -11,7 +11,7 @@
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#140c0f"
     },
     "ios": {
       "supportsTablet": true
@@ -20,7 +20,7 @@
       "package": "br.org.polpop",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#140c0f"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
