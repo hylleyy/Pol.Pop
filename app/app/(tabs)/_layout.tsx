@@ -44,6 +44,7 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: Colors[colorScheme].background,
           borderTopWidth: 0,
+          shadowColor: '#fff0',
         }
       }}>
       <Tabs.Screen
