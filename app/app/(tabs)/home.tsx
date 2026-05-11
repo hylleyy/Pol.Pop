@@ -2,11 +2,11 @@ import { StyleSheet, FlatList, Image, StatusBar } from 'react-native';
 import { Text, View } from '@/components/Themed';
 
 const STORY_DATA = [
-  { title: 'test1', image: 'https://i.pravatar.cc/150?img=1' },
-  { title: 'test2', image: 'https://i.pravatar.cc/150?img=11' },
-  { title: 'test3', image: 'https://i.pravatar.cc/150?img=5' },
-  { title: 'test4', image: 'https://i.pravatar.cc/150?img=8' },
-  { title: 'test5', image: 'https://i.pravatar.cc/150?img=12' },
+  { title: 'Bolsa Família', image: 'https://www.gov.br/pt-br/noticias/assistencia-social/2023/03/acrescimo-de-r-150-do-bolsa-familia-chega-a-mais-de-8-9-milhoes-de-criancas-em-marco/02032023_bolsa_familia_logo.png' },
+  { title: 'Auxílio Gás', image: 'https://play-lh.googleusercontent.com/aMtgpakcj_06T9SIG3hxzx9nm7KarIVmwHNEu3xz0KsqTIGRhgl_bAr-NJNH--ZMmcI=w240-h480-rw' },
+  { title: 'CNH Recife', image: 'https://storage.googleapis.com/gpt-engineer-file-uploads/2FqxXnr6lTTgqeTEvFGt5bTSTov2/social-images/social-1764954252437-generated-image%20(5).png' },
+  { title: 'Prodarte', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMrgjm0ARucT5FVioNBcSUHWgqBmnhN65iFA&s' },
+  { title: 'Mães de Pernambuco', image: 'https://s2-g1.glbimg.com/FAz4Q4lXaEyf2bo4sf18Bsml7vI=/0x0:2363x1463/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2024/T/t/rQn24zSPiXQg7MIAAsdA/maes-de-pernambuco.jpeg' },
 ];
 
 export default function TabOneScreen() {
