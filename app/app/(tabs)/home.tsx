@@ -1,5 +1,7 @@
-import { StyleSheet, FlatList, Image, StatusBar } from 'react-native';
+import { StyleSheet, FlatList, Image, StatusBar, Dimensions } from 'react-native';
 import { Text, View } from '@/components/Themed';
+
+const { width } = Dimensions.get('window');
 
 const STORY_DATA = [
   { title: 'Bolsa Família', image: 'https://www.gov.br/pt-br/noticias/assistencia-social/2023/03/acrescimo-de-r-150-do-bolsa-familia-chega-a-mais-de-8-9-milhoes-de-criancas-em-marco/02032023_bolsa_familia_logo.png' },
@@ -7,6 +9,23 @@ const STORY_DATA = [
   { title: 'CNH Recife', image: 'https://storage.googleapis.com/gpt-engineer-file-uploads/2FqxXnr6lTTgqeTEvFGt5bTSTov2/social-images/social-1764954252437-generated-image%20(5).png' },
   { title: 'Prodarte', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMrgjm0ARucT5FVioNBcSUHWgqBmnhN65iFA&s' },
   { title: 'Mães de Pernambuco', image: 'https://s2-g1.glbimg.com/FAz4Q4lXaEyf2bo4sf18Bsml7vI=/0x0:2363x1463/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2024/T/t/rQn24zSPiXQg7MIAAsdA/maes-de-pernambuco.jpeg' },
+];
+
+const FEED_DATA = [
+  {
+    id: '1',
+    author: 'Prefeitura de Garanhuns',
+    authorAvatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2gncHgSme2yvN8Z7RsgI1XJ3Ts96iwi_5Vw&s',
+    imageUrl: 'https://garanhuns.pe.gov.br/gid/wp-content/uploads/2024/04/WhatsApp-Image-2024-04-16-at-18.48.07.jpeg',
+    description: 'Atenção, mães cadastradas! O pagamento da parcela deste mês já está disponível no aplicativo.',
+  },
+  {
+    id: '2',
+    author: 'Prefeitura do Recife',
+    authorAvatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_52xcaCOKI3NRvflhP1D6-XehvoYhLv6y0w&s',
+    imageUrl: 'https://imagens.ne10.uol.com.br/veiculos/_midias/jpg/2026/02/25/1224x674/1_divulgacao_pcr__2_-36488643.jpeg',
+    description: 'Últimos dias para se inscrever no programa CNH Recife. Não perca a oportunidade de tirar sua habilitação gratuitamente.',
+  },
 ];
 
 export default function TabOneScreen() {
@@ -35,7 +54,13 @@ export default function TabOneScreen() {
       {/* --- FEED SECTION --- */}
 
       <View style={styles.feedContent}>
-        <Text style={styles.title}>oiii</Text>
+        <FlatList
+          data={FEED_DATA}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <FeedItem item={item} />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.feedList}
+        />
       </View>
 
     </View>
@@ -57,6 +82,29 @@ const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : strin
   );
 };
 
+const FeedItem = ({ item }: { item: any }) => {
+  return (
+    <View style={styles.feedItemContainer}>
+      {/* Post Header (Author Info) */}
+      <View style={styles.feedItemHeader}>
+        <Image source={{ uri: item.authorAvatar }} style={styles.feedItemAvatar} />
+        <Text style={styles.feedItemAuthor}>{item.author}</Text>
+      </View>
+
+      {/* Post Image */}
+      <Image source={{ uri: item.imageUrl }} style={styles.feedItemImage} />
+
+      {/* Post Footer (Description) */}
+      <View style={styles.feedItemFooter}>
+        <Text style={styles.feedItemDescription}>
+          <Text style={styles.feedItemAuthorBold}>{item.author} </Text>
+          {item.description}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -68,18 +116,19 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
   },
-  storySection: {
-    paddingVertical: 0,
-  },
   storyList: {
     paddingLeft: 10,
     paddingRight: 10,
+    paddingBottom: 10,
   },
   storyContainer: {
     alignItems: 'center',
     marginRight: 5,
     marginLeft: 5,
     width: 72,
+  },
+  storySection: {
+    paddingVertical: 0,
   },
   avatarRing: {
     width: 73,
@@ -100,13 +149,47 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
-  feedContent: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-  }
+  },
+  feedContent: {
+    flex: 1, // Ensures the FlatList takes up remaining vertical space
+  },
+  feedList: {
+    paddingBottom: 20,
+  },
+  feedItemContainer: {
+    marginBottom: 20,
+  },
+  feedItemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  feedItemAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 10,
+  },
+  feedItemAuthor: {
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  feedItemImage: {
+    width: width,
+    height: width, // Keeps it a perfect square like Instagram
+    backgroundColor: '#e1e4e8', // Skeleton color while loading
+  },
+  feedItemFooter: {
+    padding: 10,
+  },
+  feedItemAuthorBold: {
+    fontWeight: 'bold',
+  },
+  feedItemDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
 });
