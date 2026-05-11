@@ -28,7 +28,7 @@ const FEED_DATA = [
   },
 ];
 
-export default function TabOneScreen() {
+export default function Home() {
   return (
     <View style={styles.container}>
       {/* --- HEADER SECTION --- */}
@@ -108,7 +108,7 @@ const FeedItem = ({ item }: { item: any }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: StatusBar.currentHeight || 40,
   },
   header : {
     alignItems: 'center',

@@ -6,7 +6,9 @@ export default function Discovery() {
 
   return (
     <View style={styles.container}>
+
       {/* --- SEARCH BAR SECTION --- */}
+
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
           <Image 
@@ -30,6 +32,7 @@ export default function Discovery() {
       </View>
 
       {/* --- REST OF SCREEN (EMPTY) --- */}
+
       <View style={styles.content} />
     </View>
   );
