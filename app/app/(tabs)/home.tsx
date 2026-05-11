@@ -1,6 +1,14 @@
 import { StyleSheet, FlatList, Image, StatusBar } from 'react-native';
 import { Text, View } from '@/components/Themed';
 
+const STORY_DATA = [
+  { title: 'test1', image: 'https://i.pravatar.cc/150?img=1' },
+  { title: 'test2', image: 'https://i.pravatar.cc/150?img=11' },
+  { title: 'test3', image: 'https://i.pravatar.cc/150?img=5' },
+  { title: 'test4', image: 'https://i.pravatar.cc/150?img=8' },
+  { title: 'test5', image: 'https://i.pravatar.cc/150?img=12' },
+];
+
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
@@ -16,8 +24,8 @@ export default function TabOneScreen() {
       <View style={styles.storySection}>
         <FlatList 
           data={STORY_DATA}
-          keyExtractor={ (item) => item.id }
-          renderItem={({ item }) => <StoryItem title={item.username} avatar_url={item.avatar} />}
+          // keyExtractor={ (item) => item.arbitrary_number } // I might use this later to sort from the highest to lowest match
+          renderItem={({ item }) => <StoryItem title={item.title} avatar_url={item.image} />}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.storyList}
@@ -33,14 +41,6 @@ export default function TabOneScreen() {
     </View>
   );
 }
-
-const STORY_DATA = [
-  { id: '1', username: 'Your Story', avatar: 'https://i.pravatar.cc/150?img=1', isUser: true },
-  { id: '2', username: 'john_doe', avatar: 'https://i.pravatar.cc/150?img=11' },
-  { id: '3', username: 'jane_smith', avatar: 'https://i.pravatar.cc/150?img=5' },
-  { id: '4', username: 'alex_dev', avatar: 'https://i.pravatar.cc/150?img=8' },
-  { id: '5', username: 'react_guru', avatar: 'https://i.pravatar.cc/150?img=12' },
-];
 
 const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : string } ) => {
   return (
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     height: 73,
     borderRadius: 60,
     borderWidth: 2.5,
-    borderColor: '#E1306C', // Instagram-style pink border
+    borderColor: '#ff7a00',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 4,
