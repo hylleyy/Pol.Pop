@@ -13,14 +13,12 @@ const STORY_DATA = [
 
 const FEED_DATA = [
   {
-    id: '1',
     author: 'Prefeitura de Garanhuns',
     authorAvatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2gncHgSme2yvN8Z7RsgI1XJ3Ts96iwi_5Vw&s',
     imageUrl: 'https://garanhuns.pe.gov.br/gid/wp-content/uploads/2024/04/WhatsApp-Image-2024-04-16-at-18.48.07.jpeg',
     description: 'Atenção, mães cadastradas! O pagamento da parcela deste mês já está disponível no aplicativo.',
   },
   {
-    id: '2',
     author: 'Prefeitura do Recife',
     authorAvatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_52xcaCOKI3NRvflhP1D6-XehvoYhLv6y0w&s',
     imageUrl: 'https://imagens.ne10.uol.com.br/veiculos/_midias/jpg/2026/02/25/1224x674/1_divulgacao_pcr__2_-36488643.jpeg',
@@ -56,7 +54,6 @@ export default function Home() {
       <View style={styles.feedContent}>
         <FlatList
           data={FEED_DATA}
-          keyExtractor={(item) => item.id}
           renderItem={({ item }) => <FeedItem item={item} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.feedList}
