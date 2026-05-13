@@ -20,7 +20,7 @@ All source code in this repository is licensed under the [MIT License](LICENSE.m
 
 We love open source, but we also believe in protecting our artists! We also love technological advancements; however, no AI-generated art was used in the development of this project. Every proprietary asset was handcrafted by human artists.
 
-Please see [README.md in the design directory](design/README.md) for specific usage terms and how you can (and can't) use these files.
+Please see [README.md in the assets directory](app/assets/README.md) for specific usage terms and how you can (and can't) use these files.
 
 ### Third-Party Materials
 
