@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { SQLiteProvider } from 'expo-sqlite';
 
 import { useColorScheme } from '@/components/useColorScheme';
 
@@ -42,7 +43,14 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <SQLiteProvider 
+      databaseName="polpop_local.db" 
+      assetSource={{ assetId: require('./assets/polpop_local.db') }}
+    >
+      <RootLayoutNav />
+    </SQLiteProvider>
+  );
 }
 
 function RootLayoutNav() {
