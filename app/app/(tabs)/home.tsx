@@ -1,5 +1,7 @@
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, Image, StatusBar, Dimensions } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { useSQLiteContext } from 'expo-sqlite';
 
 const { width } = Dimensions.get('window');
 
@@ -11,22 +13,36 @@ const STORY_DATA = [
   { title: 'Mães de Pernambuco', image: 'https://s2-g1.glbimg.com/FAz4Q4lXaEyf2bo4sf18Bsml7vI=/0x0:2363x1463/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2024/T/t/rQn24zSPiXQg7MIAAsdA/maes-de-pernambuco.jpeg' },
 ];
 
-const FEED_DATA = [
-  {
-    author: 'Prefeitura de Garanhuns',
-    authorAvatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2gncHgSme2yvN8Z7RsgI1XJ3Ts96iwi_5Vw&s',
-    imageUrl: 'https://garanhuns.pe.gov.br/gid/wp-content/uploads/2024/04/WhatsApp-Image-2024-04-16-at-18.48.07.jpeg',
-    description: 'Atenção, mães cadastradas! O pagamento da parcela deste mês já está disponível no aplicativo.',
-  },
-  {
-    author: 'Prefeitura do Recife',
-    authorAvatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_52xcaCOKI3NRvflhP1D6-XehvoYhLv6y0w&s',
-    imageUrl: 'https://imagens.ne10.uol.com.br/veiculos/_midias/jpg/2026/02/25/1224x674/1_divulgacao_pcr__2_-36488643.jpeg',
-    description: 'Últimos dias para se inscrever no programa CNH Recife. Não perca a oportunidade de tirar sua habilitação gratuitamente.',
-  },
-];
+interface FeedItemRow {
+  id: number;
+  author: string;
+  article: string;
+  profile: string; // base64 string
+  cover: string; // base64 string
+}
 
 export default function Home() {
+  const db = useSQLiteContext();
+  const [feedData, setFeedData] = useState<FeedItemRow[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function fetchFeed() {
+      try {
+        const result = await db.getAllAsync<FeedItemRow>(
+          'SELECT * FROM feed ORDER BY id DESC'
+        );
+        setFeedData(result);
+      } catch (error) {
+        console.error("Failed to read from SQLite feed table:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchFeed();
+  }, [db]);
+
   return (
     <View style={styles.container}>
       {/* --- HEADER SECTION --- */}
@@ -52,12 +68,19 @@ export default function Home() {
       {/* --- FEED SECTION --- */}
 
       <View style={styles.feedContent}>
-        <FlatList
-          data={FEED_DATA}
-          renderItem={({ item }) => <FeedItem item={item} />}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.feedList}
-        />
+        {isLoading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Carregando feed...</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={feedData}
+            keyExtractor={(item) => item.id.toString()} // explicit safe key sorting
+            renderItem={({ item }) => <FeedItem item={item} />}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.feedList}
+          />
+        )}
       </View>
 
     </View>
@@ -79,23 +102,35 @@ const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : strin
   );
 };
 
-const FeedItem = ({ item }: { item: any }) => {
+const FeedItem = ({ item }: { item: FeedItemRow }) => {
   return (
     <View style={styles.feedItemContainer}>
-      {/* Post Header (Author Info) */}
+
+      {/* --- AUTHOR INFO --- */}
+
       <View style={styles.feedItemHeader}>
-        <Image source={{ uri: item.authorAvatar }} style={styles.feedItemAvatar} />
+        {item.profile ? (
+          <Image source={{ uri: item.profile }} style={styles.feedItemAvatar} />
+        ) : (
+          <View style={[styles.feedItemAvatar, { backgroundColor: '#e1e4e8' }]} />
+        )}
         <Text style={styles.feedItemAuthor}>{item.author}</Text>
       </View>
 
-      {/* Post Image */}
-      <Image source={{ uri: item.imageUrl }} style={styles.feedItemImage} />
+      {/* --- COVER --- */}
 
-      {/* Post Footer (Description) */}
+      {item.cover ? (
+        <Image source={{ uri: item.cover }} style={styles.feedItemImage} />
+      ) : (
+        <View style={styles.feedItemImage} />
+      )}
+
+      {/* --- ARTICLE --- */}
+
       <View style={styles.feedItemFooter}>
         <Text style={styles.feedItemDescription}>
           <Text style={styles.feedItemAuthorBold}>{item.author} </Text>
-          {item.description}
+          {item.article}
         </Text>
       </View>
     </View>
@@ -107,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight || 40,
   },
-  header : {
+  header: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 5,
@@ -146,12 +181,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
   feedContent: {
-    flex: 1, // Ensures the FlatList takes up remaining vertical space
+    flex: 1,
   },
   feedList: {
     paddingBottom: 20,
@@ -176,8 +207,8 @@ const styles = StyleSheet.create({
   },
   feedItemImage: {
     width: width,
-    height: width, // Keeps it a perfect square like Instagram
-    backgroundColor: '#e1e4e8', // Skeleton color while loading
+    height: width,
+    backgroundColor: '#e1e4e8',
   },
   feedItemFooter: {
     padding: 10,

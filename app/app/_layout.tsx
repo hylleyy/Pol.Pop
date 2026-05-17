@@ -46,7 +46,7 @@ export default function RootLayout() {
   return (
     <SQLiteProvider 
       databaseName="polpop_local.db" 
-      assetSource={{ assetId: require('./assets/polpop_local.db') }}
+      assetSource={{ assetId: require('../assets/polpop_local.db') }}
     >
       <RootLayoutNav />
     </SQLiteProvider>
