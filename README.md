@@ -29,3 +29,13 @@ We couldn't have made this without some awesome tools and assets. This project a
 :)
 
 You can find all the specific copyright info and full license texts refering to [NOTICE.md](NOTICE.md) file.
+
+### Post-mortem
+
+Tasks for refactor:
+
+- Database naming switch
+	- "organization_name" -> "author"
+	- "profile_picture" -> "profile_b64"
+	- "content" -> "article"
+	- "images" -> "images_b64"
