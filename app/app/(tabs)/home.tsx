@@ -45,6 +45,7 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
+
       {/* --- HEADER SECTION --- */}
 
       <View style={styles.header}>
@@ -90,11 +91,15 @@ export default function Home() {
 const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : string } ) => {
   return (
     <View style={styles.storyContainer}>
-      {/* The colorful ring around the avatar */}
+
+      {/* --- RING --- */}
+
       <View style={[styles.avatarRing]}>
         <Image source={{ uri: avatar_url }} style={styles.avatar} />
       </View>
-      {/* Truncate long names with numberOfLines */}
+
+      {/* --- NAME --- */}
+
       <Text style={styles.username} numberOfLines={1}>
         {title}
       </Text>
@@ -103,35 +108,41 @@ const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : strin
 };
 
 const FeedItem = ({ item }: { item: FeedItemRow }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showReadMore, setShowReadMore] = useState(false);
+  const minimum_lines = 4
+
   return (
     <View style={styles.feedItemContainer}>
 
       {/* --- AUTHOR INFO --- */}
 
       <View style={styles.feedItemHeader}>
-        {item.profile ? (
-          <Image source={{ uri: item.profile }} style={styles.feedItemAvatar} />
-        ) : (
-          <View style={[styles.feedItemAvatar, { backgroundColor: '#e1e4e8' }]} />
-        )}
+        <Image source={{ uri: item.profile || undefined }} style={[styles.feedItemAvatar, !item.profile && { backgroundColor: '#e1e4e8' }]} />
         <Text style={styles.feedItemAuthor}>{item.author}</Text>
       </View>
 
       {/* --- COVER --- */}
 
-      {item.cover ? (
-        <Image source={{ uri: item.cover }} style={styles.feedItemImage} />
-      ) : (
-        <View style={styles.feedItemImage} />
-      )}
+      <Image source={{ uri: item.cover || undefined }} style={styles.feedItemImage} />
 
       {/* --- ARTICLE --- */}
 
       <View style={styles.feedItemFooter}>
-        <Text style={styles.feedItemDescription}>
+        <Text 
+          style={styles.feedItemDescription}
+          numberOfLines={isExpanded ? undefined : minimum_lines}
+          onTextLayout={(e) => !showReadMore && setShowReadMore(e.nativeEvent.lines.length > minimum_lines)}
+        >
           <Text style={styles.feedItemAuthorBold}>{item.author} </Text>
           {item.article}
         </Text>
+        
+        {showReadMore && (
+          <Text style={styles.readMoreText} onPress={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? 'Ler menos' : 'Ler mais'}
+          </Text>
+        )}
       </View>
     </View>
   );
@@ -219,5 +230,11 @@ const styles = StyleSheet.create({
   feedItemDescription: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  readMoreText: {
+    color: '#888888',
+    marginTop: 4,
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
