@@ -110,7 +110,7 @@ const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : strin
 const FeedItem = ({ item }: { item: FeedItemRow }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
-  const minimum_lines = 2;
+  const minimum_lines = 3;
 
   return (
     <View style={styles.feedItemContainer}>
