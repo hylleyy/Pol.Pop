@@ -12,7 +12,7 @@ interface Props {
   prefix?: string;
 }
 
-export default function CustomInput({ label, value, onChangeText, mask, keyboardType, prefix }: Props) {
+export default function ProfileInput({ label, value, onChangeText, mask, keyboardType, prefix }: Props) {
   return (
     <View style={styles.inputContainer}>
       <View style={styles.labelRow}>

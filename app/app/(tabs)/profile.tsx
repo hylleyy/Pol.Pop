@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { Masks } from 'react-native-mask-input';
 import { Ionicons } from '@expo/vector-icons'; 
 import ProfileInput from '@/components/ProfileInput';
+import { useSQLiteContext } from 'expo-sqlite';
 
 interface FormState {
   cpf: string;
@@ -23,6 +24,7 @@ interface FormState {
 }
 
 export default function Profile() {
+  const db = useSQLiteContext();
   const [form, setForm] = useState<FormState>({
     cpf: '',
     birthdate: '',
@@ -33,15 +35,82 @@ export default function Profile() {
     pregnant: null,
     elderly: null,
     disabled: null,
-    hasPublicSchoolStudent : false,
+    hasPublicSchoolStudent: false,
     hasSingleParent: false,
     hasAppDeliveryWorker: false,
-    hasRuralWorker : false,
+    hasRuralWorker: false,
     hasQuilombola: false,
   });
 
+  useEffect(() => {
+    async function loadUserData() {
+      try {
+        const user = await db.getFirstAsync<any>('SELECT * FROM users WHERE user_id = 1');
+        
+        if (user) {
+          setForm(prev => ({
+            ...prev,
+            birthdate: user.birthdate ? user.birthdate.toString() : '',
+            cpf: user.cpf || '',
+            nis: user.nis || '',
+            cep: user.cep || '',
+            income: user.house_income ? user.house_income.toString() : '',
+            children: user.house_count_kids ? (user.house_count_kids >= 4 ? '4+' : String(user.house_count_kids)) : null,
+            pregnant: user.house_count_pregnant ? (user.house_count_pregnant >= 4 ? '4+' : String(user.house_count_pregnant)) : null,
+            elderly: user.house_count_elderly ? (user.house_count_elderly >= 4 ? '4+' : String(user.house_count_elderly)) : null,
+            disabled: user.house_count_disability ? (user.house_count_disability >= 4 ? '4+' : String(user.house_count_disability)) : null,
+            hasPublicSchoolStudent: Boolean(user.has_public_school_student),
+            hasAppDeliveryWorker: Boolean(user.has_app_delivery_worker),
+            hasRuralWorker: Boolean(user.has_rural_worker),
+            hasQuilombola: Boolean(user.has_quilombola),
+            hasSingleParent: Boolean(user.has_single_parent),
+          }));
+        }
+      } catch (error) {
+        console.error("Failed to load user data:", error);
+      }
+    }
+    loadUserData();
+  }, [db]);
+
   const updateField = (field: keyof FormState, value: any) => {
     setForm({ ...form, [field]: value });
+  };
+
+  // --- 2. SAVE MVP USER DATA ---
+  const handleSave = async () => {
+    try {
+      // Data Parsers for SQLite
+      const parseCount = (val: string | null) => val ? parseInt(val.replace('+', ''), 10) : 0;
+      const parseIncome = (val: string) => parseInt(val.replace(/\D/g, ''), 10) || 0; // Strips formatting
+      const parseBool = (val: boolean) => val ? 1 : 0;
+      
+      // Parse birthdate from DD/MM/YYYY to an Integer (e.g., 19900525) for DB
+      const dateParts = form.birthdate.split('/');
+      const birthdateInt = dateParts.length === 3 
+        ? parseInt(`${dateParts[2]}${dateParts[1]}${dateParts[0]}`, 10) 
+        : 0; // Default to 0 to satisfy NOT NULL constraint
+
+      await db.runAsync(`
+        INSERT OR REPLACE INTO users (
+          user_id, user_name, birthdate, cpf, cep, nis, house_income, 
+          house_count_kids, house_count_pregnant, house_count_elderly, house_count_disability,
+          has_public_school_student, has_app_delivery_worker, has_rural_worker, has_quilombola, has_single_parent
+        ) VALUES (
+          1, 'MVP_User', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        )
+      `, [
+        birthdateInt, form.cpf, form.cep, form.nis, parseIncome(form.income),
+        parseCount(form.children), parseCount(form.pregnant), parseCount(form.elderly), parseCount(form.disabled),
+        parseBool(form.hasPublicSchoolStudent), parseBool(form.hasAppDeliveryWorker), 
+        parseBool(form.hasRuralWorker), parseBool(form.hasQuilombola), parseBool(form.hasSingleParent)
+      ]);
+
+      Alert.alert("Sucesso!", "Seus dados foram salvos localmente.");
+    } catch (error) {
+      console.error("Save error:", error);
+      Alert.alert("Erro", "Não foi possível salvar os dados.");
+    }
   };
 
   const CounterRow = ({ 
@@ -168,6 +237,12 @@ export default function Profile() {
       <CounterRow label="Gestantes" field="pregnant" />
       <CounterRow label="Idosos" field="elderly" />
       <CounterRow label="Com deficiência" field="disabled" />
+
+      {/* --- SAVE BUTTON --- */}
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Salvar Dados</Text>
+      </TouchableOpacity>
+      
     </ScrollView>
   );
 }
@@ -259,4 +334,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: '90%',
   },
+  saveButton: {
+    backgroundColor: '#fff',
+    paddingVertical: 15,
+    borderRadius: 8,
+    marginTop: 40,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
 });
