@@ -2,6 +2,12 @@
 
 # Popular Policies
 
+![Platform](https://img.shields.io/badge/platform-react--native-blue)
+![Architecture](https://img.shields.io/badge/architecture-offline--first-green)
+![Privacy](https://img.shields.io/badge/privacy-local--processing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-yellow)
+![Focus](https://img.shields.io/badge/focus-digital--inclusion-purple)
+
 > A social impact project focused on reducing administrative invisibility & democratizing access to social rights in Brazil through offline-first technology and inclusive design. 
 
 Pol.Pop is a university-led social impact project focused on one central problem: Millions of Brazilians technically qualify for public benefits, yet never access them because the systems responsible for distributing those rights are fragmented, bureaucratic, inaccessible, or digitally exclusionary.[^1]
