@@ -68,6 +68,7 @@ def generate_user_table() -> None:
 
 			user_id			INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,
 			user_name		TEXT NOT NULL UNIQUE,
+			cpf				TEXT,
 			birthdate		INTEGER NOT NULL,				-- data de nascimento do responsável
 
 			-- Dados gerais
