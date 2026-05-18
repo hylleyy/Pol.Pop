@@ -110,34 +110,33 @@ const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : strin
 const FeedItem = ({ item }: { item: FeedItemRow }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
-  const minimum_lines = 4
+  const minimum_lines = 2;
 
   return (
     <View style={styles.feedItemContainer}>
 
-      {/* --- AUTHOR INFO --- */}
-
+      {/* --- AUTHOR INFO & COVER --- */}
       <View style={styles.feedItemHeader}>
         <Image source={{ uri: item.profile || undefined }} style={[styles.feedItemAvatar, !item.profile && { backgroundColor: '#e1e4e8' }]} />
         <Text style={styles.feedItemAuthor}>{item.author}</Text>
       </View>
-
-      {/* --- COVER --- */}
-
       <Image source={{ uri: item.cover || undefined }} style={styles.feedItemImage} />
 
       {/* --- ARTICLE --- */}
-
       <View style={styles.feedItemFooter}>
         <Text 
           style={styles.feedItemDescription}
-          numberOfLines={isExpanded ? undefined : minimum_lines}
-          onTextLayout={(e) => !showReadMore && setShowReadMore(e.nativeEvent.lines.length > minimum_lines)}
+          numberOfLines={(showReadMore && !isExpanded) ? minimum_lines : undefined}
+          onTextLayout={(e) => {
+            if (!showReadMore && e.nativeEvent.lines.length > minimum_lines) {
+              setShowReadMore(true);
+            }
+          }}
         >
           <Text style={styles.feedItemAuthorBold}>{item.author} </Text>
           {item.article}
         </Text>
-        
+
         {showReadMore && (
           <Text style={styles.readMoreText} onPress={() => setIsExpanded(!isExpanded)}>
             {isExpanded ? 'Ler menos' : 'Ler mais'}
