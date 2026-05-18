@@ -15,7 +15,11 @@ interface FormState {
   pregnant: string | null;
   elderly: string | null;
   disabled: string | null;
+  hasPublicSchoolStudent: boolean;
+  hasSingleParent: boolean;
   hasAppDeliveryWorker: boolean;
+  hasRuralWorker: boolean;
+  hasQuilombola: boolean;
 }
 
 export default function Profile() {
@@ -29,7 +33,11 @@ export default function Profile() {
     pregnant: null,
     elderly: null,
     disabled: null,
+    hasPublicSchoolStudent : false,
+    hasSingleParent: false,
     hasAppDeliveryWorker: false,
+    hasRuralWorker : false,
+    hasQuilombola: false,
   });
 
   const updateField = (field: keyof FormState, value: any) => {
@@ -118,13 +126,39 @@ export default function Profile() {
       <TouchableOpacity 
         style={styles.checkboxInputContainer} 
         activeOpacity={0.7}
+        onPress={() => updateField('hasPublicSchoolStudent', !form.hasPublicSchoolStudent)}
+      >
+        <Text style={styles.checkboxInputLabel}>Alguém da casa é estudante da rede pública?</Text>
+        <Ionicons 
+          name={form.hasPublicSchoolStudent ? "checkbox" : "square-outline"} 
+          size={24} 
+          color={form.hasPublicSchoolStudent ? "#fff" : "#444"} 
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.checkboxInputContainer} 
+        activeOpacity={0.7}
         onPress={() => updateField('hasAppDeliveryWorker', !form.hasAppDeliveryWorker)}
       >
-        <Text style={styles.checkboxInputLabel}>Alguém da sua casa trabalha com entrega por aplicativo ou delivery?</Text>
+        <Text style={styles.checkboxInputLabel}>Alguém da casa dirige para aplicativo?</Text>
         <Ionicons 
           name={form.hasAppDeliveryWorker ? "checkbox" : "square-outline"} 
           size={24} 
           color={form.hasAppDeliveryWorker ? "#fff" : "#444"} 
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.checkboxInputContainer} 
+        activeOpacity={0.7}
+        onPress={() => updateField('hasRuralWorker', !form.hasRuralWorker)}
+      >
+        <Text style={styles.checkboxInputLabel}>Alguém da casa é trabalhador rural?</Text>
+        <Ionicons 
+          name={form.hasRuralWorker ? "checkbox" : "square-outline"} 
+          size={24} 
+          color={form.hasRuralWorker ? "#fff" : "#444"} 
         />
       </TouchableOpacity>
 
@@ -223,5 +257,6 @@ const styles = StyleSheet.create({
   checkboxInputLabel: {
     color: '#555',
     fontSize: 18,
+    width: '90%',
   },
 });
