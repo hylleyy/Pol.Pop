@@ -5,6 +5,7 @@ sphere: 1
 provider: "Governo do Estado de Pernambuco"
 benefit_value: "Auxílio financeiro pago no período da entressafra"
 action_link: "https://www.pe.gov.br"
+cover: "https://chagrande.pe.gov.br/wp-content/uploads/2022/06/chapu-de-Palha.png"
 rules:
   needs_rural_worker: 1
   min_age_user: 18

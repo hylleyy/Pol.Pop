@@ -5,6 +5,7 @@ sphere: 1
 provider: "Governo do Estado de Pernambuco"
 benefit_value: "R$ 300,00 mensais"
 action_link: "https://www.maesdepernambuco.pe.gov.br/"
+cover: "https://www.maesdepernambuco.pe.gov.br/images/Maes_de_PE_Horizontal_RGB_G.png"
 rules:
   max_income_per_capita: 218
   needs_nis: 1

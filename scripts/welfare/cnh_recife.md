@@ -5,6 +5,7 @@ sphere: 2
 provider: "Prefeitura do Recife"
 benefit_value: "Isenção total de taxas para tirar a CNH"
 action_link: "https://cnhsocial.recife.pe.gov.br/"
+cover: "https://cnhsocial.recife.pe.gov.br/wp-content/uploads/2025/12/CNH-Recife-Logo.png"
 rules:
   max_income_family: 2640
   needs_app_delivery_worker: 1

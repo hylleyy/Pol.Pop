@@ -5,6 +5,7 @@ sphere: 0
 provider: "MDS - Governo Federal"
 benefit_value: "Mínimo de R$ 600,00 por família"
 action_link: "https://www.gov.br/mds/pt-br/acoes-e-programas/bolsa-familia"
+cover: "https://static.poder360.com.br/2021/10/bolsafamilia-848x477.jpg"
 rules:
   max_income_per_capita: 218
   needs_nis: 1
