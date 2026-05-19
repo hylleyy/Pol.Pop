@@ -10,22 +10,19 @@
 
 > A social impact project focused on reducing administrative invisibility & democratizing access to social rights in Brazil through offline-first technology and inclusive design. 
 
-Pol.Pop is a university-led social impact project focused on one central problem: Millions of Brazilians technically qualify for public benefits, yet never access them because the systems responsible for distributing those rights are fragmented, bureaucratic, inaccessible, or digitally exclusionary.[^1]
-
-[^1]: Although Gov.br is widely used, there is a gap between social classes. While 94% of users in Class A accessed the portal or asked someone to access it, this number drops to only 35% in Class DE. [(CGI.br, 2025, p. 33-34)](http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=33)
-
 ## 🔍 Overview
 
 Brazil has significantly modernized parts of its digital public infrastructure through initiatives such as Gov.br. However, welfare discovery and access remain highly fragmented. Different levels of government (federal, state, municipal) rarely integrate effectively, creating situations where:
 
-- Citizens qualify for benefits but never discover them;[^2]
-- Information exists but is inaccessible;[^3]
-- Eligibility rules are difficult to understand;
-- Administrative terminology alienates users;
+
+- Citizens qualify for benefits but never discover them;[^1]
+- Information exists but is inaccessible;[^2]
+- Eligibility rules are difficult to understand;[^3]
 - Digital exclusion prevents access entirely.[^4]
 
-[^2]: Approximately 39% of users from social classes C, D, and E stopped accessing public policies due to connectivity limitations, and 33% stopped accessing public services in general. [(IDEC; INSTITUTO LOCOMOTIVA, 2021, p. 12)](https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12)
-[^3]: Approximately 14% of Brazilian households (around 28 million people) still do not have internet access. [(CGI.br, 2025, p. 12)](http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=12)
+[^1]: Approximately 14% of Brazilian households (around 28 million people) still do not have internet access. [(CGI.br, 2025, p. 12)](http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=12)
+[^2]: Although Gov.br is widely used, there is a gap between social classes. While 94% of users in Class A accessed the portal or asked someone to access it, this number drops to only 35% in Class DE. [(CGI.br, 2025, p. 33-34)](http://cetic.br/media/analises/tic_domicilios_2025_principais_resultados.pdf#page=33)
+[^3]: Approximately 39% of users from social classes C, D, and E stopped accessing public policies due to connectivity limitations, and 33% stopped accessing public services in general. [(IDEC; INSTITUTO LOCOMOTIVA, 2021, p. 12)](https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12)
 [^4]: IDEC points out that 4 out of 10 low-income users have already stopped accessing public policies because their data plan ran out or their connection failed while loading heavy government portals. [(IDEC; INSTITUTO LOCOMOTIVA, 2021, p. 12)](https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12)
 
 Pol.Pop focuses specifically on the gap between "A benefit exists" and "The citizen actually knows and accesses it." The platform proposes a radically simplified approach to discovering and understanding public welfare programs.
