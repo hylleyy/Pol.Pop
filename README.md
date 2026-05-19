@@ -14,7 +14,6 @@
 
 Brazil has significantly modernized parts of its digital public infrastructure through initiatives such as Gov.br. However, welfare discovery and access remain highly fragmented. Different levels of government (federal, state, municipal) rarely integrate effectively, creating situations where:
 
-
 - Citizens qualify for benefits but never discover them;[^1]
 - Information exists but is inaccessible;[^2]
 - Eligibility rules are difficult to understand;[^3]
@@ -25,7 +24,7 @@ Brazil has significantly modernized parts of its digital public infrastructure t
 [^3]: Approximately 39% of users from social classes C, D, and E stopped accessing public policies due to connectivity limitations, and 33% stopped accessing public services in general. [(IDEC; INSTITUTO LOCOMOTIVA, 2021, p. 12)](https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12)
 [^4]: IDEC points out that 4 out of 10 low-income users have already stopped accessing public policies because their data plan ran out or their connection failed while loading heavy government portals. [(IDEC; INSTITUTO LOCOMOTIVA, 2021, p. 12)](https://idec.org.br/sites/default/files/versao_revisada_pesquisa_locomotiva.pdf#page=12)
 
-Pol.Pop focuses specifically on the gap between "A benefit exists" and "The citizen actually knows and accesses it." The platform proposes a radically simplified approach to discovering and understanding public welfare programs.
+Pol.Pop focuses specifically on the gap between "A benefit exists" and "The citizen actually knows how, when and where access it." The platform proposes a radically simplified approach to discovering and understanding public welfare programs.
 
 Instead of forcing citizens to navigate dozens of complex government portals, legal documents, and administrative terms, the platform translates public policy eligibility into a familiar, low-cognitive-load mobile experience inspired by social media interfaces already widely understood by low-income populations.
 
