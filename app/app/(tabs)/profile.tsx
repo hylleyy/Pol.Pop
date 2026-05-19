@@ -77,19 +77,24 @@ export default function Profile() {
     setForm({ ...form, [field]: value });
   };
 
-  // --- 2. SAVE MVP USER DATA ---
   const handleSave = async () => {
     try {
       // Data Parsers for SQLite
       const parseCount = (val: string | null) => val ? parseInt(val.replace('+', ''), 10) : 0;
       const parseIncome = (val: string) => parseInt(val.replace(/\D/g, ''), 10) || 0; // Strips formatting
       const parseBool = (val: boolean) => val ? 1 : 0;
-      
-      // Parse birthdate from DD/MM/YYYY to an Integer (e.g., 19900525) for DB
+
       const dateParts = form.birthdate.split('/');
-      const birthdateInt = dateParts.length === 3 
-        ? parseInt(`${dateParts[2]}${dateParts[1]}${dateParts[0]}`, 10) 
-        : 0; // Default to 0 to satisfy NOT NULL constraint
+      let birthdateTimestamp = 0; // Default to 0 to satisfy NOT NULL database constraint
+
+      if (dateParts.length === 3) {
+        const day = parseInt(dateParts[0], 10);
+        const month = parseInt(dateParts[1], 10) - 1; // JS months are 0-indexed (0-11)
+        const year = parseInt(dateParts[2], 10);
+
+        // Using Date.UTC to prevent local timezone offsets from shifting the date
+        birthdateTimestamp = new Date(Date.UTC(year, month, day)).getTime();
+      }
 
       await db.runAsync(`
         INSERT OR REPLACE INTO users (
@@ -100,7 +105,7 @@ export default function Profile() {
           1, 'MVP_User', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
       `, [
-        birthdateInt, form.cpf, form.cep, form.nis, parseIncome(form.income),
+        birthdateTimestamp, form.cpf, form.cep, form.nis, parseIncome(form.income),
         parseCount(form.children), parseCount(form.pregnant), parseCount(form.elderly), parseCount(form.disabled),
         parseBool(form.hasPublicSchoolStudent), parseBool(form.hasAppDeliveryWorker), 
         parseBool(form.hasRuralWorker), parseBool(form.hasQuilombola), parseBool(form.hasSingleParent)
