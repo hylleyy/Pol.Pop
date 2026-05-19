@@ -106,7 +106,7 @@ export default function Profile() {
         parseBool(form.hasRuralWorker), parseBool(form.hasQuilombola), parseBool(form.hasSingleParent)
       ]);
 
-      Alert.alert("Sucesso!", "Seus dados foram salvos localmente.");
+      // Alert.alert("Sucesso!", "Seus dados foram salvos localmente.");
     } catch (error) {
       console.error("Save error:", error);
       Alert.alert("Erro", "Não foi possível salvar os dados.");
@@ -147,6 +147,7 @@ export default function Profile() {
       <Text style={styles.subtitle}>Seus dados são processados localmente.</Text>
 
       {/* --- IDENTIFICAÇÃO --- */}
+
       <Text style={styles.sectionTitle}>Identificação</Text>
 
       <ProfileInput 
@@ -181,6 +182,7 @@ export default function Profile() {
       />
 
       {/* --- SOCIOECONÔMICO --- */}
+
       <Text style={[styles.sectionTitle, { marginTop: 40 }]}>Socioeconômico</Text>
 
       <ProfileInput 
@@ -239,10 +241,11 @@ export default function Profile() {
       <CounterRow label="Com deficiência" field="disabled" />
 
       {/* --- SAVE BUTTON --- */}
+
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Salvar Dados</Text>
+        <Text style={styles.saveButtonText}>Salvar</Text>
       </TouchableOpacity>
-      
+
     </ScrollView>
   );
 }
