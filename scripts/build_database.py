@@ -21,6 +21,7 @@ def generate_welfare_table() -> None:
 			benefit_value TEXT,
 			action_link TEXT,
 			content TEXT,
+			cover TEXT,
 
 			-- parâmetros numéricos das regras
 
@@ -64,15 +65,19 @@ def generate_welfare_table() -> None:
 		content = benefit_data.content
 		rules = benefit_data.get('rules', {})
 
+		cover_url = benefit_data.get('cover', '')
+		print('downloading & resizing cover image (200x200)…')
+		cver_b64 : str = image_url_to_base_64(cover_url, (200, 200))
+
 		cursor.execute('''
 			INSERT OR REPLACE INTO welfare (
-				benefit_id, name, sphere, provider, benefit_value, action_link, content,
+				benefit_id, name, sphere, provider, benefit_value, action_link, content, cover,
 				max_income_per_capita, max_income_family, min_age_user, max_child_age,
 				needs_nis, needs_single_parent, needs_app_delivery_worker, 
 				needs_rural_worker, needs_public_school_student, needs_quilombola
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		''', (
-			b_id, name, sphere, provider, benefit_value, action_link, content,
+			b_id, name, sphere, provider, benefit_value, action_link, content, cver_b64,
 			rules.get('max_income_per_capita', 999999),
 			rules.get('max_income_family', 999999),
 			rules.get('min_age_user', 0),
