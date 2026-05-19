@@ -1,73 +1,159 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, Image, StatusBar, Dimensions } from 'react-native';
+import { StyleSheet, FlatList, Image, StatusBar, Dimensions, DeviceEventEmitter } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useSQLiteContext } from 'expo-sqlite';
 
 const { width } = Dimensions.get('window');
 
-const STORY_DATA = [
-  { title: 'Bolsa Família', image: 'https://www.gov.br/pt-br/noticias/assistencia-social/2023/03/acrescimo-de-r-150-do-bolsa-familia-chega-a-mais-de-8-9-milhoes-de-criancas-em-marco/02032023_bolsa_familia_logo.png' },
-  { title: 'Auxílio Gás', image: 'https://play-lh.googleusercontent.com/aMtgpakcj_06T9SIG3hxzx9nm7KarIVmwHNEu3xz0KsqTIGRhgl_bAr-NJNH--ZMmcI=w240-h480-rw' },
-  { title: 'CNH Recife', image: 'https://storage.googleapis.com/gpt-engineer-file-uploads/2FqxXnr6lTTgqeTEvFGt5bTSTov2/social-images/social-1764954252437-generated-image%20(5).png' },
-  { title: 'Prodarte', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMrgjm0ARucT5FVioNBcSUHWgqBmnhN65iFA&s' },
-  { title: 'Mães de Pernambuco', image: 'https://s2-g1.glbimg.com/FAz4Q4lXaEyf2bo4sf18Bsml7vI=/0x0:2363x1463/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2024/T/t/rQn24zSPiXQg7MIAAsdA/maes-de-pernambuco.jpeg' },
-];
+interface WelfareRow {
+  benefit_id: number;
+  name: string;
+  sphere: number;
+  provider: string;
+  benefit_value: string;
+  action_link: string;
+  content: string;
+  cover: string; 
+  max_income_per_capita: number;
+  max_income_family: number;
+  min_age_user: number;
+  max_child_age: number;
+  needs_nis: number;
+  needs_single_parent: number;
+  needs_app_delivery_worker: number;
+  needs_rural_worker: number;
+  needs_public_school_student: number;
+  needs_quilombola: number;
+}
 
 interface FeedItemRow {
   id: number;
   author: string;
   article: string;
-  profile: string; // base64 string
-  cover: string; // base64 string
+  profile: string; 
+  cover: string; 
+}
+
+interface UserRow {
+  user_id: number;
+  user_name: string;
+  cpf: string;
+  birthdate: number;
+  nis: string | null;
+  cep: string | null;
+  house_income: number;
+  house_count_total: number;
+  house_count_kids: number;
+  has_quilombola: number;
+  has_single_parent: number;
+  has_app_delivery_worker: number;
+  has_rural_worker: number;
+  has_public_school_student: number;
 }
 
 export default function Home() {
   const db = useSQLiteContext();
   const [feedData, setFeedData] = useState<FeedItemRow[]>([]);
+  const [welfareData, setWelfareData] = useState<WelfareRow[]>([]);
+  const [currentUser, setCurrentUser] = useState<UserRow | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    async function fetchFeed() {
-      try {
-        const result = await db.getAllAsync<FeedItemRow>(
-          'SELECT * FROM feed ORDER BY id DESC'
-        );
-        setFeedData(result);
-      } catch (error) {
-        console.error("Failed to read from SQLite feed table:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  // Decoupled query pipeline so it can be called seamlessly during updates
+  async function fetchData() {
+    try {
+      const feedResult = await db.getAllAsync<FeedItemRow>(
+        'SELECT * FROM feed ORDER BY id DESC'
+      );
+      setFeedData(feedResult);
 
-    fetchFeed();
+      const welfareResult = await db.getAllAsync<WelfareRow>(
+        'SELECT * FROM welfare ORDER BY benefit_id ASC'
+      );
+      setWelfareData(welfareResult);
+
+      const userResult = await db.getAllAsync<UserRow>(
+        'SELECT * FROM users WHERE user_id = 1'
+      );
+      if (userResult.length > 0) {
+        setCurrentUser(userResult[0]);
+      }
+    } catch (error) {
+      console.error("Failed to read from SQLite database:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    // Initial fetch on component mount
+    fetchData();
+
+    // --- SETUP DEVICE EVENT EMITTER LISTENER ---
+    const subscription = DeviceEventEmitter.addListener('welfare:profile_updated', () => {
+      fetchData();
+    });
+
+    // Clean up subscription to prevent leaks when navigating out
+    return () => {
+      subscription.remove();
+    };
   }, [db]);
+
+  const checkEligibility = (benefit: WelfareRow, user: UserRow | null): boolean => {
+    if (!user) return false;
+
+    // 1. Per Capita Income restriction check
+    const userPerCapitaIncome = user.house_income / (user.house_count_total || 1);
+    if (userPerCapitaIncome > benefit.max_income_per_capita) return false;
+
+    // 2. Global Family Income restriction check
+    if (user.house_income > benefit.max_income_family) return false;
+
+    // 3. Flags and requirements check
+    if (benefit.needs_nis === 1 && !user.nis) return false;
+    if (benefit.needs_single_parent === 1 && user.has_single_parent === 0) return false;
+    if (benefit.needs_app_delivery_worker === 1 && user.has_app_delivery_worker === 0) return false;
+    if (benefit.needs_rural_worker === 1 && user.has_rural_worker === 0) return false;
+    if (benefit.needs_public_school_student === 1 && user.has_public_school_student === 0) return false;
+    if (benefit.needs_quilombola === 1 && user.has_quilombola === 0) return false;
+
+    return true;
+  };
 
   return (
     <View style={styles.container}>
 
-      {/* --- HEADER SECTION --- */}
-
+      {/* --- HEADER --- */}
       <View style={styles.header}>
-        <Image source={require('../../assets/images/splash-icon.png')}
-        style={{ width: 45, height: 45 }} />
+        <Image source={require('../../assets/images/splash-icon.png')} style={{ width: 45, height: 45 }} />
       </View>
 
-      {/* --- STORY SECTION --- */}
-
+      {/* --- STORIES SECTION --- */}
       <View style={styles.storySection}>
-        <FlatList 
-          data={STORY_DATA}
-          // keyExtractor={ (item) => item.arbitrary_number } // I might use this later to sort from the highest to lowest match
-          renderItem={({ item }) => <StoryItem title={item.title} avatar_url={item.image} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.storyList}
-        />
+        {isLoading ? (
+          <View style={{ height: 90, justifyContent: 'center', paddingLeft: 20 }}><Text>...</Text></View>
+        ) : (
+          <FlatList 
+            data={welfareData}
+            keyExtractor={(item) => item.benefit_id.toString()}
+            renderItem={({ item }) => {
+              const isEligible = checkEligibility(item, currentUser);
+              return (
+                <StoryItem 
+                  title={item.name} 
+                  avatar_base64={item.cover} 
+                  isEligible={isEligible} 
+                />
+              );
+            }}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.storyList}
+          />
+        )}
       </View>
 
       {/* --- FEED SECTION --- */}
-
       <View style={styles.feedContent}>
         {isLoading ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -76,7 +162,7 @@ export default function Home() {
         ) : (
           <FlatList
             data={feedData}
-            keyExtractor={(item) => item.id.toString()} // explicit safe key sorting
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <FeedItem item={item} />}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.feedList}
@@ -88,18 +174,15 @@ export default function Home() {
   );
 }
 
-const StoryItem = ( { title, avatar_url } : { title : string, avatar_url : string } ) => {
+const StoryItem = ({ title, avatar_base64, isEligible }: { title: string, avatar_base64: string, isEligible: boolean }) => {
   return (
     <View style={styles.storyContainer}>
-
-      {/* --- RING --- */}
-
-      <View style={[styles.avatarRing]}>
-        <Image source={{ uri: avatar_url }} style={styles.avatar} />
+      <View style={[styles.avatarRing, { borderColor: isEligible ? '#2e7d32' : '#ff7a00' }]}>
+        <Image 
+          source={avatar_base64 ? { uri: avatar_base64 } : require('../../assets/images/splash-icon.png')} 
+          style={styles.avatar} 
+        />
       </View>
-
-      {/* --- NAME --- */}
-
       <Text style={styles.username} numberOfLines={1}>
         {title}
       </Text>
@@ -114,15 +197,12 @@ const FeedItem = ({ item }: { item: FeedItemRow }) => {
 
   return (
     <View style={styles.feedItemContainer}>
-
-      {/* --- AUTHOR INFO & COVER --- */}
       <View style={styles.feedItemHeader}>
         <Image source={{ uri: item.profile || undefined }} style={[styles.feedItemAvatar, !item.profile && { backgroundColor: '#e1e4e8' }]} />
         <Text style={styles.feedItemAuthor}>{item.author}</Text>
       </View>
       <Image source={{ uri: item.cover || undefined }} style={styles.feedItemImage} />
 
-      {/* --- ARTICLE --- */}
       <View style={styles.feedItemFooter}>
         <Text 
           style={styles.feedItemDescription}
@@ -177,7 +257,6 @@ const styles = StyleSheet.create({
     height: 73,
     borderRadius: 60,
     borderWidth: 2.5,
-    borderColor: '#ff7a00',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 4,
@@ -186,6 +265,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
+    backgroundColor: '#e1e4e8',
   },
   username: {
     fontSize: 12,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, Alert, DeviceEventEmitter } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { Masks } from 'react-native-mask-input';
 import { Ionicons } from '@expo/vector-icons'; 
@@ -79,39 +79,42 @@ export default function Profile() {
 
   const handleSave = async () => {
     try {
-      // Data Parsers for SQLite
       const parseCount = (val: string | null) => val ? parseInt(val.replace('+', ''), 10) : 0;
-      const parseIncome = (val: string) => parseInt(val.replace(/\D/g, ''), 10) || 0; // Strips formatting
+      const parseIncome = (val: string) => parseInt(val.replace(/\D/g, ''), 10) || 0; 
       const parseBool = (val: boolean) => val ? 1 : 0;
 
       const dateParts = form.birthdate.split('/');
-      let birthdateTimestamp = 0; // Default to 0 to satisfy NOT NULL database constraint
+      let birthdateTimestamp = 0; 
 
       if (dateParts.length === 3) {
         const day = parseInt(dateParts[0], 10);
-        const month = parseInt(dateParts[1], 10) - 1; // JS months are 0-indexed (0-11)
+        const month = parseInt(dateParts[1], 10) - 1; 
         const year = parseInt(dateParts[2], 10);
-
-        // Using Date.UTC to prevent local timezone offsets from shifting the date
         birthdateTimestamp = new Date(Date.UTC(year, month, day)).getTime();
       }
+
+      // Calculate total count dynamically to accurately derive per capita values
+      const totalHouseholdCount = 1 + parseCount(form.children) + parseCount(form.pregnant) + parseCount(form.elderly);
 
       await db.runAsync(`
         INSERT OR REPLACE INTO users (
           user_id, user_name, birthdate, cpf, cep, nis, house_income, 
-          house_count_kids, house_count_pregnant, house_count_elderly, house_count_disability,
+          house_count_total, house_count_kids, house_count_pregnant, house_count_elderly, house_count_disability,
           has_public_school_student, has_app_delivery_worker, has_rural_worker, has_quilombola, has_single_parent
         ) VALUES (
-          1, 'MVP_User', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+          1, 'MVP_User', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
       `, [
         birthdateTimestamp, form.cpf, form.cep, form.nis, parseIncome(form.income),
-        parseCount(form.children), parseCount(form.pregnant), parseCount(form.elderly), parseCount(form.disabled),
+        totalHouseholdCount, parseCount(form.children), parseCount(form.pregnant), parseCount(form.elderly), parseCount(form.disabled),
         parseBool(form.hasPublicSchoolStudent), parseBool(form.hasAppDeliveryWorker), 
         parseBool(form.hasRuralWorker), parseBool(form.hasQuilombola), parseBool(form.hasSingleParent)
       ]);
 
-      // Alert.alert("Sucesso!", "Seus dados foram salvos localmente.");
+      // --- BROADCAST THE UPDATE LOCALLY ---
+      DeviceEventEmitter.emit('welfare:profile_updated');
+
+      Alert.alert("Sucesso!", "Seus dados foram salvos localmente.");
     } catch (error) {
       console.error("Save error:", error);
       Alert.alert("Erro", "Não foi possível salvar os dados.");
@@ -151,8 +154,6 @@ export default function Profile() {
       <Text style={styles.headerTitle}>Ficha Técnica</Text>
       <Text style={styles.subtitle}>Seus dados são processados localmente.</Text>
 
-      {/* --- IDENTIFICAÇÃO --- */}
-
       <Text style={styles.sectionTitle}>Identificação</Text>
 
       <ProfileInput 
@@ -185,8 +186,6 @@ export default function Profile() {
         mask={Masks.ZIP_CODE} 
         keyboardType="numeric" 
       />
-
-      {/* --- SOCIOECONÔMICO --- */}
 
       <Text style={[styles.sectionTitle, { marginTop: 40 }]}>Socioeconômico</Text>
 
@@ -244,8 +243,6 @@ export default function Profile() {
       <CounterRow label="Gestantes" field="pregnant" />
       <CounterRow label="Idosos" field="elderly" />
       <CounterRow label="Com deficiência" field="disabled" />
-
-      {/* --- SAVE BUTTON --- */}
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Salvar</Text>
